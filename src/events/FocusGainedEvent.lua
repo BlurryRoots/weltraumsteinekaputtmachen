@@ -1,6 +1,8 @@
-require("lib.lclass.init")
+require ("lib.lclass.init")
 
 class "FocusGainedEvent"
 
-function FocusGainedEvent:FocusGainedEvent()
+FocusGainedEvent.typeName = "FocusGainedEvent"
+
+function FocusGainedEvent:FocusGainedEvent ()
 end

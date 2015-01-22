@@ -1,6 +1,9 @@
-require("lib.lclass.init")
+require ("lib.lclass.init")
 
 class "KeyboardKeyUpEvent"
 
-function KeyboardKeyUpEvent:KeyboardKeyUpEvent(key)
+KeyboardKeyUpEvent.typeName = "KeyboardKeyUpEvent"
+
+function KeyboardKeyUpEvent:KeyboardKeyUpEvent (key)
+	self.key = key
 end

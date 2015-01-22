@@ -1,6 +1,10 @@
-require("lib.lclass.init")
+require ("lib.lclass.init")
 
 class "ResizeEvent"
 
-function ResizeEvent:ResizeEvent(w, h)
+ResizeEvent.typeName = "ResizeEvent"
+
+function ResizeEvent:ResizeEvent (w, h)
+	self.width = w
+	self.height = h
 end

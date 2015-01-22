@@ -1,10 +1,10 @@
-name = HeX
+name = NoName
 
 all: repack run
 
 repack:
-	rm -f $(name).love
-	zip -9qr $(name).love gfx lib sfx src *.lua
+	rm -f bin/$(name).love
+	zip -9qr bin/$(name).love gfx lib sfx src *.lua
 
 run:
-	love $(name).love
+	love bin/$(name).love
