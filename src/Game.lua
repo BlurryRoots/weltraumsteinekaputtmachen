@@ -29,7 +29,6 @@ end
 
 function Game:raise (event)
 	--
-	print ("trying to raise event " .. event.typeName)
 	self.eventManager:push (event)
 end
 
