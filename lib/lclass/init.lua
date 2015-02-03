@@ -98,6 +98,13 @@ function class( name )
 	local metatable = {}
 	metatable.__index = metatable
 	metatable.__type = name
+	metatable.getClass = function (self)
+		return self.__type
+	end
+	-- fixing problem of concatination not referencing self
+	metatable.__concat = function (left, right)
+		return tostring (left) .. tostring (right)
+	end
 	-- Create a shortcut to name()
 	setmetatable( metatable, {
 		__call = function( _, ... )

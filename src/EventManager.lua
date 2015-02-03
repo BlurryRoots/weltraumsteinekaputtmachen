@@ -19,9 +19,9 @@ end
 function EventManager:update (dt)
 	while table.getn (self.events) > 0 do
 		local event = table.remove (self.events)
-		local handlers = self.subscriber[event.typeName]
+		local handlers = self.subscriber[event:getClass ()]
 		if handlers and table.getn (handlers) > 0 then
-			for _,handler in pairs (self.subscriber[event.typeName]) do
+			for _,handler in pairs (self.subscriber[event:getClass ()]) do
 				handler:handle (event)
 			end
 		end
