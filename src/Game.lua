@@ -33,6 +33,8 @@ function Game:Game ()
 
 	self.log = {}
 	self.shipoflife = Ship ()
+  self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
+  self.eventManager:subscribe ("KeyboardKeyUpEvent", self.shipoflife)
 end
 
 -- Raises (queues) a new event
