@@ -12,6 +12,8 @@ require ("src.events.MouseButtonDownEvent")
 require ("src.events.MouseButtonUpEvent")
 require ("src.events.ResizeEvent")
 
+require ("src.Ship")
+
 class "Game"
 
 -- Constructs a new game
@@ -28,6 +30,7 @@ function Game:Game ()
 	self.eventManager:subscribe ("ResizeEvent", self)
 
 	self.log = {}
+	self.shipoflife = Ship ()
 end
 
 -- Raises (queues) a new event
@@ -54,6 +57,7 @@ end
 function Game:onUpdate (dt)
 	--
 	self.eventManager:update (dt)
+	self.shipoflife:onUpdate (dt)
 
 	local toberemoved = {}
 	for i, v in pairs (self.log) do
@@ -72,6 +76,7 @@ end
 function Game:onRender ()
 	--
 	self:renderLog ()
+	self.shipoflife:onRender ()
 end
 
 -- Gets called when game exits. May be used to do some clean up.

@@ -3,12 +3,12 @@ require ("lib.lclass")
 class "Ship"
 
 function Ship:Ship ()
-	self.gfx = love.graphic.newImage ("gfx/ship.png")
+	self.gfx = love.graphics.newImage ("gfx/schiff.png")
 	self.r = 255
 	self.g = 255
 	self.b = 255
-	self.x = 0
-	self.y = 0
+	self.x = 200
+	self.y = 200
 	self.rot = {
 		w = self.gfx:getWidth () / 2,
 		h = self.gfx:getHeight () / 2,
@@ -22,9 +22,6 @@ function Ship:onUpdate (dt)
 end
 
 function Ship:onRender ()
-	local hw =
-	local hh = self.gfx:getHeight () / 2
-
 	love.graphics.push ()
 		love.graphics.setColor (self.r, self.g, self.b, 255)
 		love.graphics.push ()
