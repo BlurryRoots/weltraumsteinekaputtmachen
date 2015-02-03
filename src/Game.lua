@@ -29,6 +29,8 @@ function Game:Game ()
 	self.eventManager:subscribe ("MouseButtonUpEvent", self)
 	self.eventManager:subscribe ("ResizeEvent", self)
 
+  self.bg = love.graphics.newImage("gfx/bg.jpg")
+
 	self.log = {}
 	self.shipoflife = Ship ()
 end
@@ -75,8 +77,15 @@ end
 -- Renders stuff onto the screen
 function Game:onRender ()
 	--
+  local width = love.graphics.getWidth()
+  local height = love.graphics.getHeight()
+  local scaleX = self.bg:getWidth() / width
+  local scaleY = self.bg:getHeight() / height
+  
+  love.graphics.draw(self.bg, 0, 0, 0, scaleX, scaleY)
 	self:renderLog ()
 	self.shipoflife:onRender ()
+  
 end
 
 -- Gets called when game exits. May be used to do some clean up.
