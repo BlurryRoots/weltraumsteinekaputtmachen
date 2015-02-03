@@ -32,7 +32,7 @@ function love.conf(t)
 	-- Index of the monitor to show the window in (number)
 	t.window.display = 1
 	-- Enable high-dpi mode for the window on a Retina display (boolean). Added in 0.9.1
-	t.window.highdpi = true
+	t.window.highdpi = false
 	-- Enable sRGB gamma correction when drawing to the screen (boolean). Added in 0.9.1
 	t.window.srgb = false
 
