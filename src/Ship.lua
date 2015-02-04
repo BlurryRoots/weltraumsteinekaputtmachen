@@ -15,78 +15,86 @@ function Ship:Ship ()
 		v = 0
 	}
 	self.scale = 1
-  self.rotationSpeed = 10
-  self.accelerationSpeed = 33
 
-  self.acceleration = 0
-  self.rotation = 0
+	self.rotationSpeed = 10
+	self.accelerationSpeed = 33
 
-  self.momentum = {
-    x = 0,
-    y = 0,
-    __tostring = function(self)
-      return "{" .. self.x .. "," .. self.y .. "}"
-    end
-  }
-  self.isAccelerating = 0
-  self.isRotating = 0
+	self.MAX_ACCELERATION = 32
+	self.acceleration = 0
+	self.MAX_ROTATION = 2 * math.pi
+	self.rotation = 0
 
-  self.reactions = {
-    KeyboardKeyDownEvent = function(event) 
-      if event:Key() == "w" then
-        self.isAccelerating = self.isAccelerating + 1
-      end
+	self.momentum = {
+		x = 0,
+		y = 0
+	}
+	function self.momentum:__tostring ()
+		return "{" .. self.x .. "," .. self.y .. "}"
+	end
+	self.isAccelerating = 0
+	self.isRotating = 0
 
-      if event:Key() == "s" then
-        self.isAccelerating = self.isAccelerating - 1
-      end
+	self.reactions = {
+		KeyboardKeyDownEvent = function (event)
+			if event:Key() == "w" then
+				self.isAccelerating = self.isAccelerating + 1
+			end
 
-      if event:Key() == "a" then
-        self.isRotating = self.isRotating - 1
-      end
+			if event:Key() == "s" then
+				self.isAccelerating = self.isAccelerating - 1
+			end
 
-      if event:Key() == "d" then
-        self.isRotating = self.isRotating + 1
-      end
-    end,
+			if event:Key() == "a" then
+				self.isRotating = self.isRotating - 1
+			end
 
-    KeyboardKeyUpEvent = function(event)
-      if event:Key() == "w" then
-        self.isAccelerating = self.isAccelerating - 1
-      end
+			if event:Key() == "d" then
+				self.isRotating = self.isRotating + 1
+			end
+		end,
 
-      if event:Key() == "s" then
-        self.isAccelerating = self.isAccelerating + 1
-      end
+		KeyboardKeyUpEvent = function (event)
+			if event:Key() == "w" then
+				self.isAccelerating = self.isAccelerating - 1
+			end
 
-      if event:Key() == "a" then
-        self.isRotating = self.isRotating + 1
-      end
+			if event:Key() == "s" then
+				self.isAccelerating = self.isAccelerating + 1
+			end
 
-      if event:Key() == "d" then
-        self.isRotating = self.isRotating - 1
-      end
-    end
-  }
+			if event:Key() == "a" then
+				self.isRotating = self.isRotating + 1
+			end
+
+			if event:Key() == "d" then
+				self.isRotating = self.isRotating - 1
+			end
+		end
+	}
 end
 
 function Ship:onUpdate (dt)
-  self.rot.v = self.rot.v + 
-    (self.isRotating * self.rotationSpeed * dt)
+	self.rot.v = self.rot.v
+		+ (self.isRotating * self.rotationSpeed * dt)
+	self.rot.v = self.rot.v % self.MAX_ROTATION
 
-  self.acceleration = self.acceleration + 
-    (self.isAccelerating * self.accelerationSpeed * dt)
+	--[[
+	self.acceleration = self.acceleration
+		+ (self.isAccelerating * self.accelerationSpeed * dt)
+	self.acceleration = (math.abs (self.acceleration) < self.MAX_ACCELERATION)
+		and self.acceleration
+		or (self.MAX_ACCELERATION
+			* (math.abs (self.acceleration) / self.acceleration))
+	]]--
 
-  self.momentum.x = (math.cos(self.rot.v) * 
-    self.momentum.x - math.sin(self.rot.v) * self.momentum.y) *
-    self.acceleration
+	self.momentum.x = self.momentum.x
+		+ (math.sin (self.rot.v) * self.isAccelerating)
 
-  self.momentum.y = (math.sin(self.rot.v) * 
-    self.momentum.x + math.cos(self.rot.v) * self.momentum.y) *
-    self.acceleration
+	self.momentum.y = self.momentum.y
+		+ (-math.cos (self.rot.v) * self.isAccelerating)
 
-  self.x = self.x + (self.momentum.x * dt)
-  self.y = self.y + (self.momentum.y * dt)
+	self.x = self.x + (self.momentum.x * dt)
+	self.y = self.y + (self.momentum.y * dt)
 end
 
 function Ship:onRender ()
@@ -104,11 +112,19 @@ function Ship:onRender ()
 
 		love.graphics.setColor (255, 255, 255, 255)
 	love.graphics.pop()
-  love.graphics.print (tostring (self.acceleration), 42, 42)
-  love.graphics.print (tostring (self.momentum.x), 242, 42)
-  love.graphics.print (tostring (self.momentum.y), 442, 42)
+
+	local py = 42
+	local pyoff = 16
+	love.graphics.print ("rot.v: " .. self.rot.v, 42, py + 0 * pyoff)
+	love.graphics.print ("acc: " .. self.acceleration, 42, py + 1 * pyoff)
+	--love.graphics.print (tostring (self.momentum.x), 242, 42)
+	--love.graphics.print (tostring (self.momentum.y), 442, 42)
+	love.graphics.print ("mom: " .. self.momentum:__tostring (), 42, py + 2 * pyoff)
 end
 
 function Ship:handle (event)
-  self.reactions[event:getClass()](event)
+	local reaction = self.reactions[event:getClass()]
+	if reaction then
+		reaction (event)
+	end
 end
