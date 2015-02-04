@@ -24,27 +24,14 @@ function Ship:Ship ()
 	self.MAX_ROTATION = 2 * math.pi
 	self.rotation = 0
 
-	self.momentum = (function ()
-		local mt = {}
-
-		mt.__tostring = function (self)
+	self.momentum = setmetatable ({x = 0, y = 0}, {
+		__tostring = function (self)
 			return "{" .. self.x .. "," .. self.y .. "}"
 		end
-
-		local momentum = {
-			x = 0,
-			y = 0
-		}
-
-		return setmetatable (momentum, mt)
-	end)()
+	})
 
 	self.isAccelerating = 0
 	self.isRotating = 0
-
-	function calcAcceleration (event)
-
-	end
 
 	self.reactions = {
 		KeyboardKeyDownEvent = function (event)
