@@ -24,13 +24,21 @@ function Ship:Ship ()
 	self.MAX_ROTATION = 2 * math.pi
 	self.rotation = 0
 
-	self.momentum = {
-		x = 0,
-		y = 0
-	}
-	function self.momentum:__tostring ()
-		return "{" .. self.x .. "," .. self.y .. "}"
-	end
+	self.momentum = (function ()
+		local mt = {}
+
+		mt.__tostring = function (self)
+			return "{" .. self.x .. "," .. self.y .. "}"
+		end
+
+		local momentum = {
+			x = 0,
+			y = 0
+		}
+
+		return setmetatable (momentum, mt)
+	end)()
+
 	self.isAccelerating = 0
 	self.isRotating = 0
 
@@ -119,7 +127,7 @@ function Ship:onRender ()
 	love.graphics.print ("acc: " .. self.acceleration, 42, py + 1 * pyoff)
 	--love.graphics.print (tostring (self.momentum.x), 242, 42)
 	--love.graphics.print (tostring (self.momentum.y), 442, 42)
-	love.graphics.print ("mom: " .. self.momentum:__tostring (), 42, py + 2 * pyoff)
+	love.graphics.print ("mom: " .. tostring (self.momentum), 42, py + 2 * pyoff)
 end
 
 function Ship:handle (event)
