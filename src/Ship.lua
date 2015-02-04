@@ -42,40 +42,52 @@ function Ship:Ship ()
 	self.isAccelerating = 0
 	self.isRotating = 0
 
+	function calcAcceleration (event)
+
+	end
+
 	self.reactions = {
 		KeyboardKeyDownEvent = function (event)
-			if event:Key() == "w" then
-				self.isAccelerating = self.isAccelerating + 1
-			end
+			local switch = {
+				w = function ()
+					self.isAccelerating = self.isAccelerating + 1
+				end,
+				s = function ()
+					self.isAccelerating = self.isAccelerating - 1
+				end,
+				a = function ()
+					self.isRotating = self.isRotating - 1
+				end,
+				d = function ()
+					self.isRotating = self.isRotating + 1
+				end
+			}
 
-			if event:Key() == "s" then
-				self.isAccelerating = self.isAccelerating - 1
-			end
-
-			if event:Key() == "a" then
-				self.isRotating = self.isRotating - 1
-			end
-
-			if event:Key() == "d" then
-				self.isRotating = self.isRotating + 1
+			local case = switch[event:Key ()]
+			if case then
+				case ()
 			end
 		end,
 
 		KeyboardKeyUpEvent = function (event)
-			if event:Key() == "w" then
-				self.isAccelerating = self.isAccelerating - 1
-			end
+			local switch = {
+				w = function ()
+					self.isAccelerating = self.isAccelerating - 1
+				end,
+				s = function ()
+					self.isAccelerating = self.isAccelerating + 1
+				end,
+				a = function ()
+					self.isRotating = self.isRotating + 1
+				end,
+				d = function ()
+					self.isRotating = self.isRotating - 1
+				end
+			}
 
-			if event:Key() == "s" then
-				self.isAccelerating = self.isAccelerating + 1
-			end
-
-			if event:Key() == "a" then
-				self.isRotating = self.isRotating + 1
-			end
-
-			if event:Key() == "d" then
-				self.isRotating = self.isRotating - 1
+			local case = switch[event:Key ()]
+			if case then
+				case ()
 			end
 		end
 	}
