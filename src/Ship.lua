@@ -3,18 +3,26 @@ require ("lib.lclass")
 class "Ship"
 
 function Ship:Ship ()
-	self.gfx = love.graphics.newImage ("gfx/schiff.png")
+	self.gfx = {
+		ship = love.graphics.newImage ("gfx/schiff.png"),
+		jetflame = love.graphics.newImage ("gfx/flamme.png")
+	}
 	self.r = 255
 	self.g = 255
 	self.b = 255
 	self.x = 200
 	self.y = 200
 	self.rot = {
-		w = self.gfx:getWidth () / 2,
-		h = self.gfx:getHeight () / 2,
+		w = self.gfx.ship:getWidth () / 2,
+		h = self.gfx.ship:getHeight () / 2,
 		v = 0
 	}
 	self.scale = 1
+
+	self.jetflame = {
+		x = 0,
+		y = 0
+	}
 
 	self.rotationSpeed = 10
 	self.accelerationSpeed = 33
@@ -105,20 +113,26 @@ function Ship:onUpdate (dt)
 end
 
 function Ship:onRender ()
+	love.graphics.setColor (self.r, self.g, self.b, 255)
 	love.graphics.push ()
-		love.graphics.setColor (self.r, self.g, self.b, 255)
-		love.graphics.push ()
+		local rotx = self.x + self.rot.w
+		local roty = self.y + self.rot.h
+		-- rotate around the center of the ship (position)
+		love.graphics.translate (rotx, roty)
+		love.graphics.rotate (self.rot.v)
+		love.graphics.translate (-rotx, -roty)
+		love.graphics.draw (
+			self.gfx.ship,
+			self.x, self.y
+		)
+		if not (self.isAccelerating == 0) then
 			love.graphics.draw (
-				self.gfx,
-				self.x, self.y,
-				self.rot.v,
-				self.scale, self.scale,
-				self.rot.w, self.rot.h
+				self.gfx.jetflame,
+				self.x, self.y + self.rot.h * 2
 			)
-		love.graphics.pop ()
-
-		love.graphics.setColor (255, 255, 255, 255)
+		end
 	love.graphics.pop()
+	love.graphics.setColor (255, 255, 255, 255)
 
 	local py = 42
 	local pyoff = 16
