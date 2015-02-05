@@ -29,7 +29,7 @@ function Game:Game ()
 	self.eventManager:subscribe ("MouseButtonUpEvent", self)
 	self.eventManager:subscribe ("ResizeEvent", self)
 
-	self.bg = love.graphics.newImage("gfx/bg.jpg")
+	self.bg = love.graphics.newImage("gfx/bg.png")
 
 	self.log = {}
 	self.shipoflife = Ship ()
