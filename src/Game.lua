@@ -36,12 +36,12 @@ function Game:Game ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
 	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.shipoflife)
 
-  self.intro = love.audio.newSource("sfx/song_intro.mp3")
-  --self.intro:play()
+	self.intro = love.audio.newSource("sfx/song_intro.mp3")
+	--self.intro:play()
 
-  self.loop = love.audio.newSource("sfx/song_loop1.mp3")
-  self.loop:setLooping(true)
-  self.loop:play()
+	self.loop = love.audio.newSource("sfx/song_loop1.mp3")
+	self.loop:setLooping(true)
+	self.loop:play()
 end
 
 -- Raises (queues) a new event
