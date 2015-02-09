@@ -47,9 +47,6 @@ function Ship:Ship ()
 				w = function ()
 					self.isAccelerating = self.isAccelerating + 1
 				end,
-				s = function ()
-					self.isAccelerating = self.isAccelerating - 1
-				end,
 				a = function ()
 					self.isRotating = self.isRotating - 1
 				end,
@@ -68,9 +65,6 @@ function Ship:Ship ()
 			local switch = {
 				w = function ()
 					self.isAccelerating = self.isAccelerating - 1
-				end,
-				s = function ()
-					self.isAccelerating = self.isAccelerating + 1
 				end,
 				a = function ()
 					self.isRotating = self.isRotating + 1
