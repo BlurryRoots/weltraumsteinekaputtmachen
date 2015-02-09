@@ -14,3 +14,6 @@ repack:
 
 run:
 	$(love) bin/$(name).love
+
+export:
+	cat bin/$(name).love
