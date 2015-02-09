@@ -110,6 +110,23 @@ function Ship:onUpdate (dt)
 
 	self.x = self.x + (self.momentum.x * dt)
 	self.y = self.y + (self.momentum.y * dt)
+
+	if self.x > love.graphics.getWidth() then
+		self.x = 0
+	end
+
+	if self.y > love.graphics.getHeight() then
+		self.y = 0
+	end
+
+	if self.x < 0 then
+		self.x = love.graphics.getWidth()
+	end
+
+	if self.y < 0 then
+		self.y = love.graphics.getHeight()
+	end
+
 end
 
 function Ship:onRender ()
