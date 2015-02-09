@@ -25,7 +25,7 @@ function Ship:Ship ()
 	}
 
 	self.rotationSpeed = 10
-	self.accelerationSpeed = 33
+	self.accelerationSpeed = 32
 
 	self.MAX_ACCELERATION = 32
 	self.acceleration = 0
@@ -93,20 +93,11 @@ function Ship:onUpdate (dt)
 		+ (self.isRotating * self.rotationSpeed * dt)
 	self.rot.v = self.rot.v % self.MAX_ROTATION
 
-	--[[
-	self.acceleration = self.acceleration
-		+ (self.isAccelerating * self.accelerationSpeed * dt)
-	self.acceleration = (math.abs (self.acceleration) < self.MAX_ACCELERATION)
-		and self.acceleration
-		or (self.MAX_ACCELERATION
-			* (math.abs (self.acceleration) / self.acceleration))
-	]]--
-
 	self.momentum.x = self.momentum.x
-		+ (math.sin (self.rot.v) * self.isAccelerating)
+		+ (math.sin (self.rot.v) * self.isAccelerating * self.accelerationSpeed)
 
 	self.momentum.y = self.momentum.y
-		+ (-math.cos (self.rot.v) * self.isAccelerating)
+		+ (-math.cos (self.rot.v) * self.isAccelerating * self.accelerationSpeed)
 
 	self.x = self.x + (self.momentum.x * dt)
 	self.y = self.y + (self.momentum.y * dt)
@@ -155,8 +146,6 @@ function Ship:onRender ()
 	local pyoff = 16
 	love.graphics.print ("rot.v: " .. self.rot.v, 42, py + 0 * pyoff)
 	love.graphics.print ("acc: " .. self.acceleration, 42, py + 1 * pyoff)
-	--love.graphics.print (tostring (self.momentum.x), 242, 42)
-	--love.graphics.print (tostring (self.momentum.y), 442, 42)
 	love.graphics.print ("mom: " .. tostring (self.momentum), 42, py + 2 * pyoff)
 end
 
