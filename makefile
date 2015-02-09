@@ -1,5 +1,11 @@
 name = NoName
 
+ifeq ($(shell uname), Darwin)
+	love = /Applications/love.app/Contents/MacOS/love
+else
+	love = love
+endif
+
 all: repack run
 
 repack:
@@ -7,4 +13,4 @@ repack:
 	zip -9qr bin/$(name).love gfx lib sfx src *.lua
 
 run:
-	love bin/$(name).love
+	$(love) bin/$(name).love
