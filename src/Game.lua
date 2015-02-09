@@ -29,6 +29,8 @@ function Game:Game ()
 	self.eventManager:subscribe ("MouseButtonUpEvent", self)
 	self.eventManager:subscribe ("ResizeEvent", self)
 
+	self.commands = {}
+
 	self.bg = love.graphics.newImage("gfx/bg.png")
 
 	self.log = {}
@@ -80,7 +82,11 @@ end
 
 -- Updates game logic
 function Game:onUpdate (dt)
-	--
+	for _, command in pairs (self.commands) do
+		command:execute (dt)
+	end
+	self.commands = {}
+
 	self.eventManager:update (dt)
 	self.shipoflife:onUpdate (dt)
 end
@@ -100,4 +106,8 @@ end
 -- Gets called when game exits. May be used to do some clean up.
 function Game:onExit ()
 	--
+end
+
+function Game:issueCommand (command)
+	table.insert (self.commands, command)
 end
