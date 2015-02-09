@@ -13,6 +13,7 @@ require ("src.events.MouseButtonUpEvent")
 require ("src.events.ResizeEvent")
 
 require ("src.Ship")
+require("src.Asteroid")
 
 class "Game"
 
@@ -33,6 +34,7 @@ function Game:Game ()
 
 	self.log = {}
 	self.shipoflife = Ship ()
+	self.asteroid1 = Asteroid ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
 	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.shipoflife)
 
@@ -80,6 +82,7 @@ function Game:onUpdate (dt)
 	--
 	self.eventManager:update (dt)
 	self.shipoflife:onUpdate (dt)
+	self.asteroid1:onUpdate (dt)
 end
 
 -- Renders stuff onto the screen
@@ -92,6 +95,7 @@ function Game:onRender ()
 	love.graphics.draw(self.bg, 0, 0, 0, scaleX, scaleY)
 
 	self.shipoflife:onRender ()
+	self.asteroid1:onRender ()
 end
 
 -- Gets called when game exits. May be used to do some clean up.
