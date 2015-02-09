@@ -48,6 +48,9 @@ function Game:Game ()
 			local switch = {
 				escape = function ()
 					love.event.quit()
+				end,
+				q = function ()
+					love.event.quit()
 				end
 			}
 
