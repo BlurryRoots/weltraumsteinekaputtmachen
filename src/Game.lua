@@ -42,6 +42,22 @@ function Game:Game ()
 	self.loop = love.audio.newSource("sfx/song_loop1.mp3")
 	self.loop:setLooping(true)
 	self.loop:play()
+
+	self.reactions = {
+		KeyboardKeyUpEvent = function (event)
+			local switch = {
+				escape = function ()
+					love.event.quit()
+				end
+			}
+
+			local case = switch[event:Key ()]
+			if case then
+				case ()
+			end
+		end
+	}
+
 end
 
 -- Raises (queues) a new event
@@ -53,6 +69,10 @@ end
 -- Callback used by EventManager
 function Game:handle (event)
 	--
+	local reaction = self.reactions[event:getClass()]
+	if reaction then
+		reaction (event)
+	end
 end
 
 -- Updates game logic
