@@ -1,7 +1,14 @@
 require ("lib.lclass")
 require ("lib.yagl.AssetManager")
+require ("lib.yanecos.EntityManager")
 
 require ("src.EventManager")
+
+require ("src.data.AnimationData")
+require ("src.data.MassData")
+require ("src.data.ThrusterData")
+require ("src.data.TransformData")
+require ("src.data.VelocityData")
 
 require ("src.processors.SoundProcessor")
 
@@ -34,6 +41,11 @@ function Game:Game ()
 
 	self.assets:loadImage ("gfx/bg.png", "gfx/bg")
 	self.assets:loadSound ("sfx/song_loop1.mp3", "sfx/loop1")
+
+	self.entityManager = EntityManager ()
+
+	local shipId = self.entityManager:createEntity ({"player"})
+	self.entityManager:addData (shipId, AnimationData ("gfx/schiff.png"))
 
 	self.shipoflife = Ship ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
