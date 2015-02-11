@@ -7,6 +7,8 @@ function EntityManager:EntityManager ()
 	self.idCounter = 0
 	-- tags -> list of ids
 	self.tags = {}
+	-- id -> list of tags
+	self.tagMap = {}
 	-- id -> list of assigned data
 	self.dataMap = {}
 	-- datatypename -> list of entities holding this type of data
@@ -38,8 +40,21 @@ function EntityManager:addTag (eid, tag)
 	if not self.tags[tag] then
 		self.tags[tag] = {}
 	end
+	self.tags[tag][eid] = eid
 
-	table.insert (self.tags[tag], eid)
+	if not self.tagMap[eid] then
+		self.tagMap[eid] = {}
+	end
+	table.insert (self.tagMap[eid], tag)
+
+	return tag, eid
+end
+
+function EntityManager:removeTag (eid, tag)
+	for _, tag in pairs (self.tagMap[eid]) do
+		self.tags[tag][eid] = nil
+	end
+	self.tagMap[eid] = nil
 
 	return tag, eid
 end
@@ -103,7 +118,10 @@ function EntityManager:findEntitiesWithData (datalist)
 		local hasAll = true
 
 		for _, typename in pairs (datalist) do
-			hasAll = hasAll and self.typeMap[typename][eid]
+			hasAll = hasAll
+				and self.typeMap[typename]
+				and self.typeMap[typename][eid]
+
 			if not hasAll then
 				break
 			end
@@ -118,4 +136,23 @@ function EntityManager:findEntitiesWithData (datalist)
 end
 
 function EntityManager:findEntitiesWithTag (taglist)
+	-- treat every entity as possible match
+	for eid, _ in pairs (self.dataMap) do
+		local hasAll = true
+
+		for _, tag in pairs (taglist) do
+			hasAll = hasAll
+				and self.tags[tag]
+				and self.tags[tag][eid]
+
+			if not hasAll then
+				break
+			end
+		end
+
+		if hasAll then
+			entities[eid] = eid
+		end
+	end
+
 end
