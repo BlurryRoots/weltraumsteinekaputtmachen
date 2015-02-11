@@ -1,18 +1,23 @@
 require ("lib.lclass")
 
-class "System"
+class "Processor"
 
-function System:System ()
+function Processor:Processor ()
+	--
 end
 
-function System:onStart ()
+function Processor:onStart ()
+	--
 end
 
-function System:onStop ()
+function Processor:onStop ()
+	--
 end
 
-function System:onUpdate (dt)
+function Processor:onUpdate (dt)
+	--
 end
 
-function System:onRender ()
+function Processor:onRender ()
+	--
 end
