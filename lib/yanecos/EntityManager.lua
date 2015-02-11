@@ -73,18 +73,16 @@ function EntityManager:removeData (eid, typename)
 	return typename, eid
 end
 
-local inspect = require ("lib.inspect")
 function EntityManager:hasData (eid, typename)
 	if not self.dataMap[eid] then
 		error ("There is no entity with id " .. eid)
 	end
-	print ("Checking if " .. eid .. " has " .. typename)
+
 	local has = false
 	if self.typeMap[typename] then
 		return true == self.typeMap[typename][eid]
 	end
-	print ("Result: " .. tostring (has))
-	print ("TypeMap: " .. inspect (self.typeMap))
+
 	return has
 end
 
