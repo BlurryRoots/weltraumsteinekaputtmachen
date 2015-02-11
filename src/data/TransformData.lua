@@ -1,19 +1,24 @@
 require ("lib.lclass")
-local d = require ("lib.inspect")
 require ("lib.yanecos.Data")
 
-class "PositionData"
+class "TransformData" ("Data")
 
-function PositionData:PositionData (x, y)
-	self.x = x or 1337
+function TransformData:TransformData (x, y, rotation, scale)
+	self.x = x or 42
 	self.y = y or 42
+	self.rotation = rotation or 0
+	self.scale = scale or 1
 end
 
-function PositionData:__tostring ()
-	return "{" .. tostring (self.x) .. ":" .. tostring (self.y) .. "}"
+function TransformData:__tostring ()
+	local str = "{" .. tostring (self.x) .. ":" .. tostring (self.y) .. "}"
+	str = str .. "/" .. tostring (self.rotation)
+	str = str .. "@" .. tostring (100 / self.scale) .. "%"
+
+	return str
 end
 
-function PositionData:X (x)
+function TransformData:x (x)
 	if not x then
 		return self.x
 	end
@@ -21,10 +26,26 @@ function PositionData:X (x)
 	self.x = x
 end
 
-function PositionData:Y (y)
+function TransformData:y (y)
 	if not y then
 		return self.y
 	end
 
 	self.y = y
+end
+
+function TransformData:rotation (rotation)
+	if not rotation then
+		return self.rotation
+	end
+
+	self.rotation = rotation
+end
+
+function TransformData:scale (scale)
+	if not scale then
+		return self.scale
+	end
+
+	self.scale = scale
 end
