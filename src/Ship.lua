@@ -121,6 +121,7 @@ function Ship:onRender ()
 		local roty = self.y + self.rot.h
 		-- rotate around the center of the ship (position)
 		love.graphics.translate (rotx, roty)
+		love.graphics.scale (self.scale)
 		love.graphics.rotate (self.rot.v)
 		love.graphics.translate (-rotx, -roty)
 		love.graphics.draw (
