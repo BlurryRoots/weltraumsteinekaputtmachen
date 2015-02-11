@@ -11,6 +11,7 @@ require ("src.data.TransformData")
 require ("src.data.VelocityData")
 
 require ("src.processors.SoundProcessor")
+require ("src.processors.AnimationProcessor")
 
 require ("src.events.FocusGainedEvent")
 require ("src.events.FocusLostEvent")
@@ -48,7 +49,7 @@ function Game:Game ()
 
 	local ship = self.entityManager:createEntity ({"player"})
 	self.entityManager
-		:addData (ship, TransformData (32, 32))
+		:addData (ship, TransformData (0, 0))
 	self.entityManager
 		:addData (ship, MassData (1337))
 	self.entityManager
@@ -56,16 +57,17 @@ function Game:Game ()
 	self.entityManager
 		:addData (ship, VelocityData ())
 	self.entityManager
-		:addData (ship, AnimationData ("gfx/ship"))
+		-- center ship animation on transform position
+		:addData (ship, AnimationData ("gfx/ship", 1, 0, {x = -0.5, y = -0.5}))
+		-- offset flame animation so it sits behind thrusters
 		:addChild (AnimationData ("gfx/flame", 1, 0, {x = 0.0, y = 1.0}))
+		-- initialize the flames to be invisible
 		.visible = false
-
-	self.shipoflife = Ship ()
-	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
-	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.shipoflife)
 
 	self.soundProcessor = SoundProcessor (self.assets)
 	self.eventManager:subscribe ("PlaySoundEvent", self.soundProcessor)
+
+	self.animationProcessor = AnimationProcessor (self.entityManager, self.assets)
 
 	self.reactions = {
 		KeyboardKeyUpEvent = function (event)
@@ -103,10 +105,10 @@ end
 
 -- Updates game logic
 function Game:onUpdate (dt)
-	self.soundProcessor:onUpdate (dt)
-
 	self.eventManager:update (dt)
-	self.shipoflife:onUpdate (dt)
+
+	self.soundProcessor:onUpdate (dt)
+	self.animationProcessor:onUpdate (dt)
 end
 
 -- Renders stuff onto the screen
@@ -120,7 +122,7 @@ function Game:onRender ()
 
 	love.graphics.draw (bg, 0, 0, 0, scaleX, scaleY)
 
-	self.shipoflife:onRender ()
+	self.animationProcessor:onRender ()
 end
 
 -- Gets called when game exits. May be used to do some clean up.
