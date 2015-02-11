@@ -36,5 +36,5 @@ function AssetManager:get (key)
 end
 
 function AssetManager:has (key)
-	return not self.assets[key]
+	return not (not self.assets[key])
 end
