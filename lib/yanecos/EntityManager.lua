@@ -95,9 +95,27 @@ function EntityManager:getData (eid, typename)
 	return data, eid
 end
 
-function EntityManager:findEntitiesByData (datalist)
+function EntityManager:findEntitiesWithData (datalist)
+	local entities = {}
 
+	-- treat every entity as possible match
+	for eid, _ in pairs (self.dataMap) do
+		local hasAll = true
+
+		for _, typename in pairs (datalist) do
+			hasAll = hasAll and self.typeMap[typename][eid]
+			if not hasAll then
+				break
+			end
+		end
+
+		if hasAll then
+			entities[eid] = eid
+		end
+	end
+
+	return entities
 end
 
-function EntityManager:findEntitiesByTag (taglist)
+function EntityManager:findEntitiesWithTag (taglist)
 end
