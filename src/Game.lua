@@ -12,6 +12,7 @@ require ("src.data.VelocityData")
 
 require ("src.processors.SoundProcessor")
 require ("src.processors.AnimationProcessor")
+require ("src.processors.PlayerInputProcessor")
 
 require ("src.events.FocusGainedEvent")
 require ("src.events.FocusLostEvent")
@@ -67,25 +68,12 @@ function Game:Game ()
 	self.soundProcessor = SoundProcessor (self.assets)
 	self.eventManager:subscribe ("PlaySoundEvent", self.soundProcessor)
 
-	self.animationProcessor = AnimationProcessor (self.entityManager, self.assets)
+	self.animationProcessor =
+		AnimationProcessor (self.entityManager, self.assets)
 
-	self.reactions = {
-		KeyboardKeyUpEvent = function (event)
-			local switch = {
-				escape = function ()
-					love.event.quit()
-				end,
-				q = function ()
-					love.event.quit()
-				end
-			}
-
-			local case = switch[event:Key ()]
-			if case then
-				case ()
-			end
-		end
-	}
+	self.playerInputProcessor = PlayerInputProcessor (self.entityManager)
+	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.playerInputProcessor)
+	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.playerInputProcessor)
 
 	self.eventManager:push (PlaySoundEvent ("sfx/loop1", 0.8, true))
 end
@@ -97,10 +85,7 @@ end
 
 -- Callback used by EventManager
 function Game:handle (event)
-	local reaction = self.reactions[event:getClass()]
-	if reaction then
-		reaction (event)
-	end
+	--
 end
 
 -- Updates game logic

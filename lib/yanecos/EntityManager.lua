@@ -136,6 +136,8 @@ function EntityManager:findEntitiesWithData (datalist)
 end
 
 function EntityManager:findEntitiesWithTag (taglist)
+	local entities = {}
+
 	-- treat every entity as possible match
 	for eid, _ in pairs (self.dataMap) do
 		local hasAll = true
@@ -155,4 +157,5 @@ function EntityManager:findEntitiesWithTag (taglist)
 		end
 	end
 
+	return entities
 end
