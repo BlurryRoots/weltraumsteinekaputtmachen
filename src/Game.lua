@@ -1,8 +1,11 @@
 require ("lib.lclass")
+require ("lib.yagl.AssetManager")
 
 require ("src.EventManager")
 
-require ("src.data.PositionData")
+require ("src.data.TransformData")
+
+require ("src.processors.SoundProcessor")
 
 require ("src.events.FocusGainedEvent")
 require ("src.events.FocusLostEvent")
@@ -11,6 +14,7 @@ require ("src.events.KeyboardKeyUpEvent")
 require ("src.events.MouseButtonDownEvent")
 require ("src.events.MouseButtonUpEvent")
 require ("src.events.ResizeEvent")
+require ("src.events.PlaySoundEvent")
 
 require ("src.Ship")
 
@@ -31,19 +35,18 @@ function Game:Game ()
 
 	self.commands = {}
 
-	self.bg = love.graphics.newImage("gfx/bg.png")
+	self.assets = AssetManager ()
+
+	self.assets:loadImage ("gfx/bg.png", "gfx/bg")
+	self.assets:loadSound ("sfx/song_loop1.mp3", "sfx/loop1")
 
 	self.log = {}
 	self.shipoflife = Ship ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
 	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.shipoflife)
 
-	self.intro = love.audio.newSource("sfx/song_intro.mp3")
-	--self.intro:play()
-
-	self.loop = love.audio.newSource("sfx/song_loop1.mp3")
-	self.loop:setLooping(true)
-	self.loop:play()
+	self.soundProcessor = SoundProcessor (self.assets)
+	self.eventManager:subscribe ("PlaySoundEvent", self.soundProcessor)
 
 	self.reactions = {
 		KeyboardKeyUpEvent = function (event)
@@ -63,6 +66,7 @@ function Game:Game ()
 		end
 	}
 
+	self.eventManager:push (PlaySoundEvent ("sfx/loop1", 0.8, true))
 end
 
 -- Raises (queues) a new event
@@ -87,18 +91,22 @@ function Game:onUpdate (dt)
 	end
 	self.commands = {}
 
+	self.soundProcessor:onUpdate (dt)
+
 	self.eventManager:update (dt)
 	self.shipoflife:onUpdate (dt)
 end
 
 -- Renders stuff onto the screen
 function Game:onRender ()
-	--
-	local width = love.graphics.getWidth()
-	local height = love.graphics.getHeight()
-	local scaleX = width / self.bg:getWidth()
-	local scaleY = height / self.bg:getHeight()
-	love.graphics.draw(self.bg, 0, 0, 0, scaleX, scaleY)
+	local bg = self.assets:get ("gfx/bg")
+
+	local width = love.graphics.getWidth ()
+	local height = love.graphics.getHeight ()
+	local scaleX = width / bg:getWidth ()
+	local scaleY = height / bg:getHeight ()
+
+	love.graphics.draw (bg, 0, 0, 0, scaleX, scaleY)
 
 	self.shipoflife:onRender ()
 end
