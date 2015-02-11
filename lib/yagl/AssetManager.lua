@@ -28,6 +28,10 @@ function AssetManager:push (key, value)
 end
 
 function AssetManager:get (key)
+	if not self:has (key) then
+		error ("Could not find resource called " .. key)
+	end
+
 	return self.assets[key]
 end
 
