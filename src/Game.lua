@@ -3,8 +3,6 @@ require ("lib.yagl.AssetManager")
 
 require ("src.EventManager")
 
-require ("src.data.TransformData")
-
 require ("src.processors.SoundProcessor")
 
 require ("src.events.FocusGainedEvent")
@@ -22,7 +20,6 @@ class "Game"
 
 -- Constructs a new game
 function Game:Game ()
-	--
 	self.eventManager = EventManager ()
 
 	self.eventManager:subscribe ("FocusGainedEvent", self)
@@ -33,14 +30,11 @@ function Game:Game ()
 	self.eventManager:subscribe ("MouseButtonUpEvent", self)
 	self.eventManager:subscribe ("ResizeEvent", self)
 
-	self.commands = {}
-
 	self.assets = AssetManager ()
 
 	self.assets:loadImage ("gfx/bg.png", "gfx/bg")
 	self.assets:loadSound ("sfx/song_loop1.mp3", "sfx/loop1")
 
-	self.log = {}
 	self.shipoflife = Ship ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
 	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.shipoflife)
@@ -71,13 +65,11 @@ end
 
 -- Raises (queues) a new event
 function Game:raise (event)
-	--
 	self.eventManager:push (event)
 end
 
 -- Callback used by EventManager
 function Game:handle (event)
-	--
 	local reaction = self.reactions[event:getClass()]
 	if reaction then
 		reaction (event)
@@ -86,11 +78,6 @@ end
 
 -- Updates game logic
 function Game:onUpdate (dt)
-	for _, command in pairs (self.commands) do
-		command:execute (dt)
-	end
-	self.commands = {}
-
 	self.soundProcessor:onUpdate (dt)
 
 	self.eventManager:update (dt)
