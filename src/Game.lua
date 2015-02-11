@@ -40,12 +40,25 @@ function Game:Game ()
 	self.assets = AssetManager ()
 
 	self.assets:loadImage ("gfx/bg.png", "gfx/bg")
+	self.assets:loadImage ("gfx/flamme.png", "gfx/flame")
+	self.assets:loadImage ("gfx/schiff.png", "gfx/ship")
 	self.assets:loadSound ("sfx/song_loop1.mp3", "sfx/loop1")
 
 	self.entityManager = EntityManager ()
 
-	local shipId = self.entityManager:createEntity ({"player"})
-	self.entityManager:addData (shipId, AnimationData ("gfx/schiff.png"))
+	local ship = self.entityManager:createEntity ({"player"})
+	self.entityManager
+		:addData (ship, TransformData (32, 32))
+	self.entityManager
+		:addData (ship, MassData (1337))
+	self.entityManager
+		:addData (ship, ThrusterData (314))
+	self.entityManager
+		:addData (ship, VelocityData ())
+	self.entityManager
+		:addData (ship, AnimationData ("gfx/ship"))
+		:addChild (AnimationData ("gfx/flame", 1, 0, {x = 0.0, y = 1.0}))
+		.visible = false
 
 	self.shipoflife = Ship ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.shipoflife)
