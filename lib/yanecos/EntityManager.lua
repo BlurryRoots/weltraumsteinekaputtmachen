@@ -8,7 +8,9 @@ function EntityManager:EntityManager ()
 	-- tags -> list of ids
 	self.tags = {}
 	-- id -> list of assigned data
-	self.data = {}
+	self.dataMap = {}
+	-- datatypename -> list of entities holding this type of data
+	self.typeMap = {}
 end
 
 function EntityManager:nextId ()
@@ -21,7 +23,7 @@ function EntityManager:createEntity (tags)
 	-- fetch newly created id (no need for reuse lua has bignum (whoohoo :D))
 	local eid = self:nextId ()
 	-- create empty data list for entity
-	self.data[eid] = {}
+	self.dataMap[eid] = {}
 	-- add tags if any
 	if tags then
 		for _, tag in pairs (tags) do
@@ -38,42 +40,66 @@ function EntityManager:addTag (eid, tag)
 	end
 
 	table.insert (self.tags[tag], eid)
+
+	return tag, eid
 end
 
 function EntityManager:addData (eid, data)
-	if self:hasData (eid, data) then
-		error ("Entity " .. eid .. " already has data of type " .. data.__type)
+	local typename = data:getClass ()
+
+	if self:hasData (eid, typename) then
+		error ("Entity " .. eid .. " already has data of type " .. typename)
 	end
 
-	table.insert (self.data[eid], data)
-end
-
-function EntityManager:removeData (eid, datatype)
-	if not self:hasData (eid, data) then
-		error ("Entity " .. eid .. " has no data of type " .. data.__type)
+	-- store data in data map
+	self.dataMap[eid][typename] = data
+	-- mark id in type map
+	if not self.typeMap[typename] then
+		self.typeMap[typename] = {}
 	end
+	self.typeMap[typename][eid] = true
+
+	return data, eid
 end
 
-function EntityManager:hasData (eid, datatype)
-	if not self.data[eid] then
+function EntityManager:removeData (eid, typename)
+	if not self:hasData (eid, typename) then
+		error ("Entity " .. eid .. " has no data of type " .. typename)
+	end
+
+	self.dataMap[eid][typename] = nil
+	self.typeMap[typename][eid] = nil
+
+	return typename, eid
+end
+
+local inspect = require ("lib.inspect")
+function EntityManager:hasData (eid, typename)
+	if not self.dataMap[eid] then
 		error ("There is no entity with id " .. eid)
 	end
-
+	print ("Checking if " .. eid .. " has " .. typename)
 	local has = false
-	for _, data in pairs (self.data[eid]) do
-		has = data.__type == datatype.__type
-		if has then
-			break
-		end
+	if self.typeMap[typename] then
+		return true == self.typeMap[typename][eid]
 	end
-
+	print ("Result: " .. tostring (has))
+	print ("TypeMap: " .. inspect (self.typeMap))
 	return has
 end
 
-function EntityManager:getData (eid, datatype)
-	if not self.data[eid] then
-		error ("There is no entity with id " .. eid)
+function EntityManager:getData (eid, typename)
+	local data = self.dataMap[eid][typename]
+	if not data then
+		error ("Entity " .. eid .. " doesnt hold data of type " .. typename)
 	end
 
-	return self.data[eid]
+	return data, eid
+end
+
+function EntityManager:findEntitiesByData (datalist)
+
+end
+
+function EntityManager:findEntitiesByTag (taglist)
 end
