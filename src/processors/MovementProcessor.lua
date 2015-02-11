@@ -19,5 +19,21 @@ function MovementProcessor:onUpdate (dt)
 
 		transform.x = transform.x + (velocity.x * dt)
 		transform.y = transform.y + (velocity.y * dt)
+
+		if transform.x > love.graphics.getWidth () then
+			transform.x = 0
+		end
+
+		if transform.y > love.graphics.getHeight () then
+			transform.y = 0
+		end
+
+		if transform.x < 0 then
+			transform.x = love.graphics.getWidth ()
+		end
+
+		if transform.y < 0 then
+			transform.y = love.graphics.getHeight ()
+		end
 	end
 end
