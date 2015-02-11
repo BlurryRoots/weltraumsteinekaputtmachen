@@ -10,7 +10,7 @@ function PlayerInputProcessor:PlayerInputProcessor (entityManager)
 
 	self.rotationSpeed = 10
 	self.MAX_ROTATION = 2 * math.pi
-	self.accelerationSpeed = 32
+	self.accelerationSpeed = 16
 
 	self.reactions = {
 		KeyboardKeyUpEvent =  {
@@ -46,7 +46,7 @@ function PlayerInputProcessor:PlayerInputProcessor (entityManager)
 end
 
 function PlayerInputProcessor:onUpdate (dt)
-	local player = self.entityManager:findEntitiesWithTag ({"player"})
+	local player = self.entityManager:findEntitiesWithTag ({"player"})[1]
 
 	local transform =
 		self.entityManager:getData (player, TransformData:getClass ())
@@ -62,6 +62,10 @@ function PlayerInputProcessor:onUpdate (dt)
 	velocity.y = velocity.y
 		+ (-math.cos (transform.rotation) * self.accelerateShip
 			* self.accelerationSpeed)
+
+	local animation =
+		self.entityManager:getData (player, AnimationData:getClass ())
+	animation.children[1].visible = not (0 == self.accelerateShip)
 end
 
 function PlayerInputProcessor:handle (event)

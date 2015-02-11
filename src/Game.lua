@@ -13,6 +13,7 @@ require ("src.data.VelocityData")
 require ("src.processors.SoundProcessor")
 require ("src.processors.AnimationProcessor")
 require ("src.processors.PlayerInputProcessor")
+require ("src.processors.MovementProcessor")
 
 require ("src.events.FocusGainedEvent")
 require ("src.events.FocusLostEvent")
@@ -22,8 +23,6 @@ require ("src.events.MouseButtonDownEvent")
 require ("src.events.MouseButtonUpEvent")
 require ("src.events.ResizeEvent")
 require ("src.events.PlaySoundEvent")
-
-require ("src.Ship")
 
 class "Game"
 
@@ -75,6 +74,8 @@ function Game:Game ()
 	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.playerInputProcessor)
 	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.playerInputProcessor)
 
+	self.movementProcessor = MovementProcessor (self.entityManager)
+
 	self.eventManager:push (PlaySoundEvent ("sfx/loop1", 0.8, true))
 end
 
@@ -92,6 +93,8 @@ end
 function Game:onUpdate (dt)
 	self.eventManager:update (dt)
 
+	self.movementProcessor:onUpdate (dt)
+	self.playerInputProcessor:onUpdate (dt)
 	self.soundProcessor:onUpdate (dt)
 	self.animationProcessor:onUpdate (dt)
 end
