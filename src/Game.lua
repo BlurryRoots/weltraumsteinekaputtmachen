@@ -14,6 +14,7 @@ require ("src.processors.SoundProcessor")
 require ("src.processors.AnimationProcessor")
 require ("src.processors.PlayerInputProcessor")
 require ("src.processors.MovementProcessor")
+require ("src.processors.MissileProcessor")
 
 require ("src.events.FocusGainedEvent")
 require ("src.events.FocusLostEvent")
@@ -43,6 +44,7 @@ function Game:Game ()
 	self.assets:loadImage ("gfx/bg.png", "gfx/bg")
 	self.assets:loadImage ("gfx/flamme.png", "gfx/flame")
 	self.assets:loadImage ("gfx/schiff.png", "gfx/ship")
+	self.assets:loadImage ("gfx/missile.png", "gfx/missile")
 	self.assets:loadSound ("sfx/song_loop1.mp3", "sfx/loop1")
 
 	self.entityManager = EntityManager ()
@@ -70,11 +72,19 @@ function Game:Game ()
 	self.animationProcessor =
 		AnimationProcessor (self.entityManager, self.assets)
 
-	self.playerInputProcessor = PlayerInputProcessor (self.entityManager)
-	self.eventManager:subscribe ("KeyboardKeyDownEvent", self.playerInputProcessor)
-	self.eventManager:subscribe ("KeyboardKeyUpEvent", self.playerInputProcessor)
+	self.playerInputProcessor =
+		PlayerInputProcessor (self.entityManager, self.eventManager)
+	self.eventManager
+		:subscribe ("KeyboardKeyDownEvent", self.playerInputProcessor)
+	self.eventManager
+		:subscribe ("KeyboardKeyUpEvent", self.playerInputProcessor)
 
 	self.movementProcessor = MovementProcessor (self.entityManager)
+
+	self.missileProcessor =
+		MissileProcessor (self.entityManager, self.eventManager)
+	self.eventManager
+		:subscribe ("FireMissileEvent", self.missileProcessor)
 
 	self.eventManager:push (PlaySoundEvent ("sfx/loop1", 0.8, true))
 end
@@ -91,10 +101,12 @@ end
 
 -- Updates game logic
 function Game:onUpdate (dt)
+	--print ("Number of entities: " .. self.entityManager:countEntities ())
 	self.eventManager:update (dt)
 
-	self.movementProcessor:onUpdate (dt)
 	self.playerInputProcessor:onUpdate (dt)
+	self.missileProcessor:onUpdate (dt)
+	self.movementProcessor:onUpdate (dt)
 	self.soundProcessor:onUpdate (dt)
 	self.animationProcessor:onUpdate (dt)
 end
