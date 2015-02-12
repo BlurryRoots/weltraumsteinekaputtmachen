@@ -1,10 +1,13 @@
 require ("lib.lclass")
 require ("lib.yanecos.Processor")
 
+require ("src.events.FireMissileEvent")
+
 class "PlayerInputProcessor" ("Processor")
 
-function PlayerInputProcessor:PlayerInputProcessor (entityManager)
+function PlayerInputProcessor:PlayerInputProcessor (entityManager, eventManager)
 	self.entityManager = entityManager
+	self.eventManager = eventManager
 	self.accelerateShip = 0
 	self.rotateShip = 0
 
@@ -28,6 +31,9 @@ function PlayerInputProcessor:PlayerInputProcessor (entityManager)
 			end,
 			d = function ()
 				self.rotateShip = self.rotateShip - 1
+			end,
+			j = function ()
+				self.eventManager:push (FireMissileEvent ())
 			end
 		},
 

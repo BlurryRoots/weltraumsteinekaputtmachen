@@ -48,7 +48,17 @@ function AnimationProcessor:renderAnimationTree (animation)
 			love.graphics.scale (animation.scale)
 			love.graphics.rotate (animation.rotation)
 
+			local r, g, b, a = love.graphics.getColor ()
+			if animation.color then
+				love.graphics.setColor (
+					animation.color.r,
+					animation.color.g,
+					animation.color.b,
+					animation.color.a
+				)
+			end
 			love.graphics.draw (image, 0, 0)
+			love.graphics.setColor (r, g, b, a)
 
 			for _, child in pairs (animation.children) do
 				if child.visible then

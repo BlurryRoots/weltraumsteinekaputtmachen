@@ -3,7 +3,7 @@ require ("lib.yanecos.Data")
 
 class "AnimationData" ("Data")
 
-function AnimationData:AnimationData (key, frames, duration, offset, rotation, scale)
+function AnimationData:AnimationData (key, frames, duration, offset, rotation, scale, color)
 	-- key to look up resource in asset manager
 	self.key = key or error ("No asset name specified!")
 	-- no frames means a single image
@@ -20,6 +20,8 @@ function AnimationData:AnimationData (key, frames, duration, offset, rotation, s
 	self.children = {}
 	-- should it be rendered?
 	self.visible = true
+	-- color to render the animation in
+	self.color = color
 end
 
 function AnimationData:addChild (animation)
