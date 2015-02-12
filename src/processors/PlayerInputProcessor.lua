@@ -48,12 +48,27 @@ end
 function PlayerInputProcessor:onUpdate (dt)
 	local player = self.entityManager:findEntitiesWithTag ({"player"})[1]
 
+	-- do stuff with players transform
 	local transform =
 		self.entityManager:getData (player, TransformData:getClass ())
 	transform.rotation = transform.rotation
 		+ (self.rotateShip * self.rotationSpeed * dt)
 	transform.rotation = transform.rotation % self.MAX_ROTATION
 
+	if transform.x > love.graphics.getWidth () then
+		transform.x = 0
+	end
+	if transform.y > love.graphics.getHeight () then
+		transform.y = 0
+	end
+	if transform.x < 0 then
+		transform.x = love.graphics.getWidth ()
+	end
+	if transform.y < 0 then
+		transform.y = love.graphics.getHeight ()
+	end
+
+	-- calculate new velocity
 	local velocity =
 		self.entityManager:getData (player, VelocityData:getClass ())
 	velocity.x = velocity.x
@@ -63,6 +78,7 @@ function PlayerInputProcessor:onUpdate (dt)
 		+ (-math.cos (transform.rotation) * self.accelerateShip
 			* self.accelerationSpeed)
 
+	-- show thruster flame if ship is accelerating
 	local animation =
 		self.entityManager:getData (player, AnimationData:getClass ())
 	animation.children[1].visible = not (0 == self.accelerateShip)
