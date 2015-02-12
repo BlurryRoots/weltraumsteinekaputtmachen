@@ -21,6 +21,16 @@ function EntityManager:nextId ()
 	return self.idCounter
 end
 
+function EntityManager:countEntities ()
+	local count = 0
+
+	for _, _ in pairs (self.dataMap) do
+		count = count + 1
+	end
+
+	return count
+end
+
 function EntityManager:createEntity (tags)
 	-- fetch newly created id (no need for reuse lua has bignum (whoohoo :D))
 	local eid = self:nextId ()
@@ -34,6 +44,22 @@ function EntityManager:createEntity (tags)
 	end
 
 	return eid
+end
+
+function EntityManager:deleteEntity (eid)
+	if not self.dataMap[eid] then
+		error ("There is no entity with id " .. eid)
+	end
+
+	for _, data in pairs (self.dataMap[eid]) do
+		self.typeMap[data:getClass ()][eid] = nil
+	end
+	self.dataMap[eid] = nil
+
+	for _, tag in pairs (self.tagMap[eid]) do
+		self.tags[tag][eid] = nil
+	end
+	self.tagMap[eid] = nil
 end
 
 function EntityManager:addTag (eid, tag)
@@ -72,7 +98,7 @@ function EntityManager:addData (eid, data)
 	if not self.typeMap[typename] then
 		self.typeMap[typename] = {}
 	end
-	self.typeMap[typename][eid] = true
+	self.typeMap[typename][eid] = eid
 
 	return data, eid
 end
