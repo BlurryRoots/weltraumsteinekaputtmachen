@@ -1,5 +1,0 @@
-require ("lib.yanecos.Data")
-require ("lib.yanecos.DataBase")
-require ("lib.yanecos.EntityManager")
-require ("lib.yanecos.System")
-require ("lib.yanecos.SystemManager")
